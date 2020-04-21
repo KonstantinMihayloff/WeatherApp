@@ -24,6 +24,8 @@ CREATE TABLE $CITY_TABLE_NAME (
 )
 """
 
+private const val CITY_QUERY_SELECT_ALL = "SELECT * FROM $CITY_TABLE_NAME"
+
 
 class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION){
 
@@ -53,6 +55,25 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         city.id = id
 
         return id > 0
+    }
+
+    fun getAllCities(): MutableList<City> {
+        val cities = mutableListOf<City>()
+
+        // SQL Query to get all the cities
+        readableDatabase.rawQuery(CITY_QUERY_SELECT_ALL, null).use{cursor ->
+            while (cursor.moveToNext()) {
+                // Get all cities with cursor
+                val city = City(
+                    cursor.getLong(cursor.getColumnIndex(CITY_KEY_ID)),
+                    cursor.getString(cursor.getColumnIndex(CITY_KEY_NAME))
+                )
+
+                cities.add(city)
+            }
+        }
+
+        return cities
     }
 
 }
