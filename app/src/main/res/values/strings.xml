@@ -4,4 +4,5 @@
     <string name="createcity_positive">Create City</string>
     <string name="createcity_negative">Cancel</string>
     <string name="cratecity_cityhint">New York, London...</string>
+    <string name="menu_create_city">Create city</string>
 </resources>
