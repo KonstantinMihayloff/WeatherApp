@@ -22,6 +22,7 @@ class CityAdapter(private val cities: List<City>,
         // Views
         val cardView = itemView.findViewById<CardView>(R.id.card_view)
         val cityNameView = itemView.findViewById<TextView>(R.id.name)
+        val deleteView = itemView.findViewById<View>(R.id.delete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,18 +42,24 @@ class CityAdapter(private val cities: List<City>,
         with(holder){
             // CardView update
             cardView.tag = city
-            // Setting a click listener to be select a city
+            // Setting a click listener to be able to select a city
             cardView.setOnClickListener(this@CityAdapter)
 
             // Update city name
             cityNameView.text = city.name
+
+            // deleteView
+            deleteView.tag = city
+            // Setting a click listener to be able to delete a city
+            deleteView.setOnClickListener(this@CityAdapter)
         }
     }
 
     override fun onClick(view: View?) {
         when(view?.id) {
-            // If clicked on the card view, means that we clicked on a city
+            // Get the city on the onClick event
             R.id.card_view -> cityListener.onCitySelected(view.tag as City)
+            R.id.delete -> cityListener.onCityDeleted(view.tag as City)
         }
     }
 }

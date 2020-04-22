@@ -1,7 +1,8 @@
-package konstmih.app.weatherapp
+package konstmih.app.weatherapp.city
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import konstmih.app.weatherapp.R
 
 class CityActivity : AppCompatActivity() {
 

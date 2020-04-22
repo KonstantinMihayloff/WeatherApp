@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import konstmih.app.weatherapp.App
 import konstmih.app.weatherapp.Database
 import konstmih.app.weatherapp.R
+import konstmih.app.weatherapp.utils.toast
 
 class CityFragment : Fragment(), CityAdapter.CityItemListener {
 
@@ -91,21 +92,48 @@ class CityFragment : Fragment(), CityAdapter.CityItemListener {
         fragmentManager?.let { createCityFragment.show(it, "CreateCityDialogFragment") }
     }
 
+    private fun showDeleteCityDialog(city: City) {
+        val deleteCityFragment = DeleteCityDialogFragment.newInstance(city.name)
+
+        // Listener interface
+        deleteCityFragment.listener = object: DeleteCityDialogFragment.DeleteCityDialogListener {
+            override fun onDialogPositiveClick() {
+                deleteCity(city)
+            }
+
+            override fun onDialogNegativeClick() { }
+
+        }
+
+        // Display the dialog fragment
+        fragmentManager?.let { deleteCityFragment.show(it, "DeleteCityDialogFragment") }
+    }
+
     private fun saveCity(city: City)
     {
         if(database.createCity(city)) { // Adding city in database
             cities.add(city) // if success than it can be added to the mutableList cities
             adapter.notifyDataSetChanged()
         } else {
-            Toast.makeText(context, "Could not create city", Toast.LENGTH_SHORT).show() // Error Toast
+            context?.toast(getString(R.string.city_message_error_could_not_create_city)) // ERROR
+        }
+    }
+
+    private fun deleteCity(city: City) {
+        if(database.deleteCity(city)) {
+            cities.remove(city)
+            adapter.notifyDataSetChanged()
+            context?.toast(getString(R.string.city_message_info_city_deleted, city.name)) // INFO
+        } else {
+            context?.toast(getString(R.string.city_message_error_could_not_delete_city, city.name)) // ERROR
         }
     }
 
     override fun onCitySelected(city: City) {
-
+        TODO()
     }
 
     override fun onCityDeleted(city: City) {
-
+        showDeleteCityDialog(city)
     }
 }

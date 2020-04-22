@@ -57,6 +57,21 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return id > 0
     }
 
+    fun deleteCity(city: City): Boolean {
+        // Log
+        Log.d(TAG,"Delete city $city")
+
+        // Only 1 line should be deleted
+        // Request that means DELETE FROM city WHERE id = 1 for example
+        val deleteCount = writableDatabase.delete(
+            CITY_TABLE_NAME,
+            "$CITY_KEY_ID = ?",
+            arrayOf("${city.id}")
+        )
+
+        return deleteCount ==1
+    }
+
     fun getAllCities(): MutableList<City> {
         val cities = mutableListOf<City>()
 
@@ -75,5 +90,4 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
         return cities
     }
-
 }
