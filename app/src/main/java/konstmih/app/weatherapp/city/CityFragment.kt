@@ -16,6 +16,7 @@ class CityFragment : Fragment(), CityAdapter.CityItemListener {
     // Listener for CityActivity
     interface CityFragmentListener {
         fun onCitySelected(city: City)
+        fun onEmptyCities()
     }
 
     var listener: CityFragmentListener? = null
@@ -130,6 +131,7 @@ class CityFragment : Fragment(), CityAdapter.CityItemListener {
         if(database.deleteCity(city)) {
             cities.remove(city)
             adapter.notifyDataSetChanged()
+            selectFirstCity() // Notify CityActivity that first city is selected
             context?.toast(getString(R.string.city_message_info_city_deleted, city.name)) // INFO
         } else {
             context?.toast(getString(R.string.city_message_error_could_not_delete_city, city.name)) // ERROR
@@ -142,5 +144,15 @@ class CityFragment : Fragment(), CityAdapter.CityItemListener {
 
     override fun onCityDeleted(city: City) {
         showDeleteCityDialog(city)
+    }
+
+    // Function used to deal with the following issue :
+    // On tablet, if current city is deleted, weather is still displayed
+    fun selectFirstCity(){
+        when(cities.isEmpty())
+        {
+            true ->listener?.onEmptyCities()
+            false -> onCitySelected(cities.first())
+        }
     }
 }

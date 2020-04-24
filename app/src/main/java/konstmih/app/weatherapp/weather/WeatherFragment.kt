@@ -22,7 +22,7 @@ import retrofit2.Response
 class WeatherFragment : Fragment() {
 
     private lateinit var cityName: String
-    private val TAG= WeatherFragment::class.java.simpleName // TAG for Log
+    private val TAG = WeatherFragment::class.java.simpleName // TAG for Log
 
     // From layout fragment_weather.xml
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -49,7 +49,7 @@ class WeatherFragment : Fragment() {
         refreshLayout = view.findViewById(R.id.swipe_refresh)
         city = view.findViewById(R.id.city)
         weatherIcon = view.findViewById(R.id.weather_icon)
-        weatherDescription = view.findViewById(R.id.wweather_description)
+        weatherDescription = view.findViewById(R.id.weather_description)
         temperature = view.findViewById(R.id.temperature)
         humidity = view.findViewById(R.id.humidity)
         pressure = view.findViewById(R.id.pressure)
@@ -63,21 +63,22 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(activity?.intent!!.hasExtra(EXTRA_CITY_NAME))
+        if (activity?.intent!!.hasExtra(EXTRA_CITY_NAME))
             updateWeatherForCity(activity!!.intent.getStringExtra(EXTRA_CITY_NAME))
     }
 
-    private fun updateWeatherForCity(cityName: String) {
+    public fun updateWeatherForCity(cityName: String) {
         // Displays the city name on the top of the weather page
         this.cityName = cityName
         this.city.text = cityName
 
-        if(!refreshLayout.isRefreshing){
+        if (!refreshLayout.isRefreshing) {
             refreshLayout.isRefreshing = true
         }
 
+        // Query call to get the weather from online service
         val call = App.weatherService.getWeather("$cityName,fr")
-        call.enqueue(object: retrofit2.Callback<WeatherWrapper> {
+        call.enqueue(object : retrofit2.Callback<WeatherWrapper> {
             override fun onFailure(call: Call<WeatherWrapper>, t: Throwable) {
                 Log.e(TAG, getString(R.string.weather_message_error_could_not_load_weather), t)
                 context?.toast(getString(R.string.weather_message_error_could_not_load_weather))
@@ -110,12 +111,23 @@ class WeatherFragment : Fragment() {
 
         // Info
         weatherDescription.text = weather.description
-        temperature.text = getString(R.string.weather_temperature_value, weather.temperature.toInt())
+        temperature.text =
+            getString(R.string.weather_temperature_value, weather.temperature.toInt())
         humidity.text = getString(R.string.weather_humidity_value, weather.humidity)
         pressure.text = getString(R.string.weather_pressure_value, weather.pressure)
     }
 
     private fun refreshWeather() {
         updateWeatherForCity(cityName)
+    }
+
+    fun clearUi() {
+        weatherIcon.setImageResource(R.drawable.ic_cloud_off_black_24dp)
+        cityName = ""
+        city.text = ""
+        weatherDescription.text = ""
+        temperature.text = ""
+        humidity.text = ""
+        pressure.text = ""
     }
 }
